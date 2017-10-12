@@ -1,4 +1,5 @@
 <resources>
 	<string name="app_name">ImageRecognizer</string>
 	<string name="ibm_watson_api_key">1111</string>
+	<string name="error_message">Could not analyze the provided image.</string>
 </resources>

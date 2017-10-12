@@ -1,5 +1,6 @@
 package com.kartik.imagerecognizer;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -8,12 +9,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ibm.watson.developer_cloud.android.library.camera.CameraHelper;
 import com.ibm.watson.developer_cloud.visual_recognition.v3.VisualRecognition;
 import com.ibm.watson.developer_cloud.visual_recognition.v3.model.ClassifyImagesOptions;
+import com.ibm.watson.developer_cloud.visual_recognition.v3.model.ImageClassification;
 import com.ibm.watson.developer_cloud.visual_recognition.v3.model.VisualClassification;
+import com.ibm.watson.developer_cloud.visual_recognition.v3.model.VisualClassifier;
 
 import java.io.File;
 
@@ -72,19 +76,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			//Get the bitmap and display in the image view.
 			final Bitmap image = cameraHelper.getBitmap(resultCode);
 			imagePreview.setImageBitmap(image);
+			//Show spinner when performing the image analysis.
+			final ProgressDialog spinner = new ProgressDialog(this);
+			spinner.show();
 
 			//Use AsyncTask to process and analyze the image in background thread.
 			AsyncTask.execute(new Runnable() {
 				@Override
 				public void run() {
-
-					VisualClassification response =
+					//classify method can handle multiple images at same time.
+					VisualClassification result =
 							vrService.classify(
 									new ClassifyImagesOptions.Builder()
 											.images(imageFile)
 											.build()
 							).execute();
+					//getImages returns a list of imageClassification. However, as we are using only one image,
+					//we will get only the first item in the list.
+					ImageClassification imageClassification = result.getImages().get(0);
 
+					VisualClassifier visualClassifier = imageClassification.getClassifiers().get(0);
+
+					final StringBuffer outputText = new StringBuffer();
+					for(VisualClassifier.VisualClass object: visualClassifier.getClasses()) {
+						//get an object only if the score is above 80%.
+						if(object.getScore() > 0.8f)
+							outputText.append(object.getName().toUpperCase())
+									.append("\n");
+					}
+					//show results on UIThread
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							spinner.dismiss();
+							if (outputText.toString().isEmpty()) {
+								imageAnalysisTxtView.setText(R.string.error_message);
+							} else {
+								imageAnalysisTxtView.setText(outputText);
+							}
+						}
+					});
 				}
 			});
 		}

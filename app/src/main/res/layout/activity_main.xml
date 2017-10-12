@@ -1,21 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context="com.kartik.imagerecognizer.MainActivity"
-	>
+	tools:context="com.kartik.imagerecognizer.MainActivity">
+
+	<ImageView
+		android:layout_width="match_parent"
+		android:layout_height="200dp"
+		android:scaleType="fitCenter"
+		android:id="@+id/image_preview"
+		android:layout_alignParentTop="true"/>
+
+	<Button
+		android:id="@+id/captureImage_btn"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/image_preview"
+		android:text="Capture Picture"/>
 
 	<TextView
-		android:layout_width="wrap_content"
+		android:id="@+id/image_analysis_header"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="Hello World!"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		/>
+		android:layout_below="@+id/captureImage_btn"
+		android:layout_marginTop="20dp"
+		android:text="Image Analysis:"
+		android:textAlignment="center"
+		android:textSize="24sp"
+		android:textStyle="bold"/>
 
-</android.support.constraint.ConstraintLayout>
+	<TextView
+		android:id="@+id/image_analysis_txt"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/image_analysis_header"
+		android:layout_margin="20dp"
+		android:textSize="18sp"
+		/>
+</RelativeLayout>

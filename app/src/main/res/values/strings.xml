@@ -2,4 +2,8 @@
 	<string name="app_name">ImageRecognizer</string>
 	<string name="ibm_watson_api_key">1111</string>
 	<string name="error_message">Could not analyze the provided image.</string>
+<!--
+	<string name="welcome_desc_message">This app uses IBM Watson Visual Recognition service to accurately detect and analyze ransom objects and human face. The Object Analyzer allows user to take a picture of a random object and analyzes it. The Face analyzer allows user to a picture of a person's face and analyzes it.</string>
+-->
+
 </resources>

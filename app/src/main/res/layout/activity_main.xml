@@ -6,37 +6,36 @@
 	android:layout_height="match_parent"
 	tools:context="com.kartik.imagerecognizer.MainActivity">
 
-	<ImageView
-		android:layout_width="match_parent"
-		android:layout_height="300dp"
-		android:scaleType="fitCenter"
-		android:id="@+id/image_preview"
-		android:layout_alignParentTop="true"/>
-
-	<Button
-		android:id="@+id/captureImage_btn"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Capture Picture"
-		android:layout_below="@+id/image_preview"
-		android:layout_centerHorizontal="true"/>
-
 	<TextView
 		android:id="@+id/image_analysis_header"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_below="@+id/captureImage_btn"
 		android:layout_marginTop="20dp"
 		android:text="Image Analysis:"
 		android:textAlignment="center"
 		android:textSize="24sp"
 		android:textStyle="bold"/>
 
-	<TextView
-		android:id="@+id/image_analysis_txt"
-		android:layout_width="match_parent"
+	<Button
+		android:id="@+id/objectAnalyze_btn"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:text="Analyze Objects"
+		android:layout_marginLeft="20dp"
+		android:layout_marginRight="20dp"
+		android:layout_marginTop="99dp"
 		android:layout_below="@+id/image_analysis_header"
-		android:layout_margin="20dp"
-		android:textSize="18sp"/>
+		android:layout_centerHorizontal="true"/>
+
+	<Button
+		android:id="@+id/faceAnalyze_btn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Analyze Faces"
+		android:layout_marginLeft="20dp"
+		android:layout_marginRight="20dp"
+		android:layout_marginTop="69dp"
+		android:layout_below="@+id/objectAnalyze_btn"
+		android:layout_centerHorizontal="true"/>
+
 </RelativeLayout>

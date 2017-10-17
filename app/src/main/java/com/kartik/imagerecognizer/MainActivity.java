@@ -23,32 +23,17 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-	//Global Variables
-	private VisualRecognition vrService;
-	private CameraHelper cameraHelper;
-	private ImageView imagePreview;
-	private Button takePictureBtn;
-	private TextView imageAnalysisTxtView;
 
-/* -------------------------------------- Lifecycle Methods -------------------------------------- */
+	/* -------------------------------------- Lifecycle Methods -------------------------------------- */
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		imagePreview = findViewById(R.id.image_preview);
-		takePictureBtn = findViewById(R.id.captureImage_btn);
-		takePictureBtn.setOnClickListener(this);
-		imageAnalysisTxtView = findViewById(R.id.image_analysis_txt);
-
-		//Instantiates a Visual Recognition service with a given API key.
-		vrService = new VisualRecognition(
-				VisualRecognition.VERSION_DATE_2016_05_20,
-				getString(R.string.ibm_watson_api_key)
-		);
-
-		// Initialize camera helper
-		cameraHelper = new CameraHelper(this);
+		final Button objectAnalyzerBtn = findViewById(R.id.objectAnalyze_btn);
+		objectAnalyzerBtn.setOnClickListener(this);
+		final Button faceAnalyzerBtn = findViewById(R.id.faceAnalyze_btn);
+		faceAnalyzerBtn.setOnClickListener(this);
 	}
 /* ------------------------------------ End Lifecycle Methods ------------------------------------ */
 
@@ -57,68 +42,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	@Override
 	public void onClick (final View view) {
 		//On the captureImage_btn click
-		if (view.getId() == R.id.captureImage_btn){
-			//open the device's default camera app to capture an image.
-			cameraHelper.dispatchTakePictureIntent();
+		switch (view.getId()) {
+			case R.id.objectAnalyze_btn:
+				startActivity(new Intent(this, ObjectAnalyzer.class));
+				break;
+			case R.id.faceAnalyze_btn:
+				startActivity(new Intent(this, PersonAnalyzer.class));
+				break;
 		}
-	}
-
-/* ------------------------------------ Activity Result Method ------------------------------------ */
-
-	//Receive the image captured previous in the onClick here.
-	@Override
-	protected void onActivityResult (final int requestCode, final int resultCode, final Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if(requestCode == CameraHelper.REQUEST_IMAGE_CAPTURE) {
-			//Get the image file using the camera helper.
-			final File imageFile = cameraHelper.getFile(resultCode);
-
-			//Get the bitmap and display in the image view.
-			final Bitmap image = cameraHelper.getBitmap(resultCode);
-			imagePreview.setImageBitmap(image);
-			//Show spinner when performing the image analysis.
-			final ProgressDialog spinner = new ProgressDialog(this);
-			spinner.show();
-
-			//Use AsyncTask to process and analyze the image in background thread.
-			AsyncTask.execute(new Runnable() {
-				@Override
-				public void run() {
-					//classify method can handle multiple images at same time.
-					VisualClassification result =
-							vrService.classify(
-									new ClassifyImagesOptions.Builder()
-											.images(imageFile)
-											.build()
-							).execute();
-					//getImages returns a list of imageClassification. However, as we are using only one image,
-					//we will get only the first item in the list.
-					ImageClassification imageClassification = result.getImages().get(0);
-
-					VisualClassifier visualClassifier = imageClassification.getClassifiers().get(0);
-
-					final StringBuffer outputText = new StringBuffer();
-					for(VisualClassifier.VisualClass object: visualClassifier.getClasses()) {
-						//get an object only if the score is above 80%.
-						if(object.getScore() > 0.8f)
-							outputText.append(object.getName().toUpperCase())
-									.append("\n");
-					}
-					//show results on UIThread
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							spinner.dismiss();
-							if (outputText.toString().isEmpty()) {
-								imageAnalysisTxtView.setText(R.string.error_message);
-							} else {
-								imageAnalysisTxtView.setText(outputText);
-							}
-						}
-					});
-				}
-			});
-		}
-
 	}
 }
